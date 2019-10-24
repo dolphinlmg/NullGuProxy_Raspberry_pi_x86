@@ -18,6 +18,7 @@ public:
     std::string what() const override { return "IP"; }
     uint16_t calcIPChecksum();
     void setIPChecksum(uint16_t checksum);
+    void setProferIPChecksum();
 
 private:
     iphdr* ip_header;

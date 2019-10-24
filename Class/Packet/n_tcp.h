@@ -22,11 +22,21 @@ public:
     tcphdr* getTcpData() const;
     uint32_t getSizeOfTcpHeader() const;
     bool isTLS() const ;
+    bool isFilteredDstPort(std::vector<uint16_t> v) const;
+    bool isFilteredDstPort(uint16_t port) const;
+    bool isFilteredSrcPort(std::vector<uint16_t> v) const;
+    bool isFilteredSrcPort(uint16_t port) const;
     bool isFilteredPort(std::vector<uint16_t> v) const;
     std::string what() const override { return "TCP"; }
     //TODO: Add Methods
     uint16_t calcTCPChecksum();
     void setTCPChecksum(uint16_t ckecksum);
+    void setProferTCPChecksum();
+    void setProferChecksum();
+    void setTcpDstPort(uint16_t port);
+    uint16_t getTcpDstPort() const;
+    void setTcpSrcPort(uint16_t port);
+    uint16_t getTcpSrcPort() const;
 
 private:
     uint16_t in_checksum(uint16_t *ptr,int nbytes);

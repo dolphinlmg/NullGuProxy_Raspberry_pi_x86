@@ -13,6 +13,7 @@ using namespace std;
 namespace MAIN {
     static n_Pcap_Data* file;
     static vector<uint16_t> ports;
+    static vector<pair<pair<uint32_t, uint32_t>, pair<uint16_t, uint16_t>>> sessions;
     static const char* portFileName = "ports.ng";
 
     // signal handler for sigint
@@ -51,6 +52,20 @@ namespace MAIN {
 
         // register signal handler
         signal(SIGINT, handler);
+    }
+
+    uint32_t parseIP(const char* ip) {
+        uint32_t ret = 0;
+        uint8_t* p = reinterpret_cast<uint8_t*>(&ret);
+        for (size_t i = 0; i < strlen(ip); i++) {
+            if(*(ip+i) == '.')
+                p++;
+            else{
+                *p *= 10;
+                *p += *(ip+i) - '0';
+            }
+        }
+        return ret;
     }
 
 }

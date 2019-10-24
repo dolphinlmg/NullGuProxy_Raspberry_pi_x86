@@ -29,13 +29,33 @@ bool n_TCP::isTLS() const {
     return (*tmp >= 0x14) && (*tmp <= 0x17);
 }
 
-// return true if the packet is filtered port
-bool n_TCP::isFilteredPort(std::vector<uint16_t> v) const {
+bool n_TCP::isFilteredDstPort(std::vector<uint16_t> v) const {
     for (auto a : v) {
-        if (ntohs(this->tcp_header->th_dport) == a || ntohs(this->tcp_header->th_sport) == a)
+        if (ntohs(this->tcp_header->th_dport) == a)
             return true;
     }
     return false;
+}
+
+bool n_TCP::isFilteredDstPort(uint16_t port) const {
+    return (ntohs(this->tcp_header->th_dport) == port);
+}
+
+bool n_TCP::isFilteredSrcPort(std::vector<uint16_t> v) const {
+    for (auto a : v) {
+        if (ntohs(this->tcp_header->th_sport) == a)
+            return true;
+    }
+    return false;
+}
+
+bool n_TCP::isFilteredSrcPort(uint16_t port) const {
+    return (ntohs(this->tcp_header->th_sport) == port);
+}
+
+// return true if the packet is filtered port
+bool n_TCP::isFilteredPort(std::vector<uint16_t> v) const {
+    return this->isFilteredDstPort(v) | this->isFilteredSrcPort(v);
 }
 
 // calculate checksum
@@ -88,4 +108,31 @@ uint16_t n_TCP::calcTCPChecksum() {
 // set checksum
 void n_TCP::setTCPChecksum(uint16_t checksum) {
     this->tcp_header->check = checksum;
+}
+
+// set profer checksum for tcp
+void n_TCP::setProferTCPChecksum() {
+    this->setTCPChecksum(this->calcTCPChecksum());
+}
+
+// set profer checksum for ip, tcp
+void n_TCP::setProferChecksum() {
+    this->setProferIPChecksum();
+    this->setProferTCPChecksum();
+}
+
+void n_TCP::setTcpDstPort(uint16_t port) {
+    this->tcp_header->dest = htons(port);
+}
+
+uint16_t n_TCP::getTcpDstPort() const {
+    return ntohs(this->tcp_header->dest);
+}
+
+void n_TCP::setTcpSrcPort(uint16_t port) {
+    this->tcp_header->source = htons(port);
+}
+
+uint16_t n_TCP::getTcpSrcPort() const {
+    return ntohs(this->tcp_header->source);
 }

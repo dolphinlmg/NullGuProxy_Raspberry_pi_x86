@@ -112,3 +112,8 @@ uint16_t n_IP::calcIPChecksum() {
 void n_IP::setIPChecksum(uint16_t checksum) {
     this->ip_header->check = checksum;
 }
+
+// set profer checksum for ip
+void n_IP::setProferIPChecksum() {
+    this->setIPChecksum(this->calcIPChecksum());
+}
